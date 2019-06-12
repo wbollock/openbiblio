@@ -98,7 +98,7 @@ class Table {
       }
       echo '>';
       if (isset($col['func']) and in_array($col['func'], get_class_methods('TableFuncs'))) {
-        echo (TableFuncs::$col)['func']($col, $row, $this->_params);
+        echo TableFuncs::{$col['func']}($col, $row, $this->_params);
       } else {
         echo H($row[$col['name']]);
       }
