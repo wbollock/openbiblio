@@ -60,11 +60,14 @@ class DmQuery extends Query {
 
   function getCheckoutStats($mbrid) {
     $MySQLn = explode('.', implode('', explode('-', mysqli_get_server_info())));
-    if ($MySQLn[0] < '5') {
+   /* 
+if ($MySQLn[0] < '5') {
         $cmd = 'type=heap';
     } else {
         $cmd = 'engine=memory';
     }
+*/
+$cmd='engine=memory';
     $sql = $this->mkSQL("create temporary table mbrout $cmd "
                         . "select b.material_cd, c.bibid, c.copyid "
                         . "from biblio_copy c, biblio b "

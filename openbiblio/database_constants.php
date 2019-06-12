@@ -8,9 +8,9 @@
  *********************************************************************************
  */
 define("OBIB_HOST",     "localhost");
-define("OBIB_DATABASE", "");
-define("OBIB_USERNAME", "");
-define("OBIB_PWD",      "");
+define("OBIB_DATABASE", "openbiblio");
+define("OBIB_USERNAME", "openbiblio");
+define("OBIB_PWD",      "openbiblio");
 /*********************************************************************************
  *  /\                                                                      /\
  *  ||                                                                      ||
