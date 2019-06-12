@@ -19,6 +19,7 @@
     "Mailing Address:" => inputField('textarea', "address", $mbr->getAddress()),
     "mbrFldsHomePhone" => inputField('text', "homePhone", $mbr->getHomePhone()),
     "mbrFldsWorkPhone" => inputField('text', "workPhone", $mbr->getWorkPhone()),
+    "mbrFldsMbrShip" => inputField('text', "membershipEnd", $mbr->getMembershipEnd()),
   );
   
   foreach ($customFields as $name => $title) {

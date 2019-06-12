@@ -12,7 +12,7 @@ class Query {
    * fatal error if it fails.  If you want to catch the error, subclass Query and
    * call connect_e() yourself.
    */
-  function __construct() {
+  function Query() {
     $e = $this->connect_e();
     if ($e) {
       Fatal::dbError($e->sql, $e->msg, $e->dberror);
@@ -76,7 +76,7 @@ class Query {
     if ($r->count() == 0) {
       return NULL;
     } else if ($r->count() != 1) {
-      Fatal::dbError($sql, 'Wrong number of result rows: expected 0 or 1, got '.$r->count(),
+      Fatal::{dbError}($sql, 'Wrong number of result rows: expected 0 or 1, got '.$r->count(),
                      'No DBMS Error');
     } else {
       return $r->next();
@@ -84,11 +84,11 @@ class Query {
   }
   function _act($sql) {
     if (!$this->_link) {
-      Fatal::internalError('Tried to make database query before connection.');
+      Fatal::{internalError}('Tried to make database query before connection.');
     }
     $r = mysqli_query($this->_link,$sql );
     if ($r === false) {
-      Fatal::dbError($sql, 'Database query failed', mysqli_error());
+      Fatal::{dbError}($sql, 'Database query failed', mysqli_error());
     }
     return $r;
   }
@@ -320,7 +320,7 @@ class Query {
 }
 
 class DbIter extends Iter {
-  function __construct($results) {
+  function DbIter($results) {
     $this->results = $results;
   }
   function count() {
@@ -339,7 +339,7 @@ class DbIter extends Iter {
  * FIXME - lose this cruft.
  */
 class DbOld {
-  function __construct($results, $id) {
+  function DbOld($results, $id) {
     $this->results = $results;
     $this->id = $id;
   }
