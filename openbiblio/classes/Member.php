@@ -31,6 +31,8 @@ class Member {
   var $_address = "";
   var $_homePhone = "";
   var $_workPhone = "";
+  var $_membershipEnd = "";
+  var $_membershipEndError = "";
   var $_custom = array();
   
 
@@ -56,7 +58,15 @@ class Member {
       $valid = false;
       $this->_firstNameError = "First name is required.";
     }
-
+    if ($this->getMembershipEnd()!="0000-00-00") {
+             $year = substr($this->getMembershipEnd(), 0, 4);
+             $month = (int)substr($this->getMembershipEnd(), 5, 2);
+            $day = (int)substr($this->getMembershipEnd(), 8, 2);
+            if (!checkdate($month,$day,$year)) {
+              $valid = false;
+      	$this->_membershipEndError = "The enddate isn't valid.";
+            }
+          }
     return $valid;
   }
   
@@ -127,6 +137,12 @@ class Member {
   function getEmail() {
     return $this->_email;
   }
+ function getMembershipEnd() {
+     return $this->_membershipEnd;
+   }
+   function getMembershipEndError() {
+      return $this->_membershipEndError;
+   }
   function getClassification() {
     return $this->_classification;
   }
