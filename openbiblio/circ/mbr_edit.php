@@ -48,8 +48,6 @@
   $_POST["workPhone"] = $mbr->getWorkPhone();
   $mbr->setEmail($_POST["email"]);
   $_POST["email"] = $mbr->getEmail();
- $mbr->setMembershipEnd($_POST["membershipEnd"]);
- $_POST["membershipEnd"] = $mbr->getMembershipEnd();
   $mbr->setClassification($_POST["classification"]);
   
   $dmQ = new DmQuery();
@@ -67,7 +65,6 @@
     $pageErrors["barcodeNmbr"] = $mbr->getBarcodeNmbrError();
     $pageErrors["lastName"] = $mbr->getLastNameError();
     $pageErrors["firstName"] = $mbr->getFirstNameError();
-    $pageErrors["membershipEnd"] = $mbr->getMembershipEndError();
     $_SESSION["postVars"] = $_POST;
     $_SESSION["pageErrors"] = $pageErrors;
     header("Location: ../circ/mbr_edit_form.php");

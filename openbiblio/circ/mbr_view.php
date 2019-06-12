@@ -75,15 +75,6 @@
     $balMsg = "<font class=\"error\">".$loc->getText("mbrViewBalMsg",array("bal"=>$balText))."</font><br><br>";
   }
 
-   #****************************************************************************
-   #*  Make sure member does not have expired membership
-   #****************************************************************************
-   $overMsg = "";
-  if ($mbr->getMembershipEnd()!="0000-00-00") {
-    if (strtotime($mbr->getMembershipEnd())<=strtotime("now")) {
-    $overMsg = "<font class=\"error\">".$loc->getText("checkoutEndErr")."</font><br><br>";
-   }}
-
   #**************************************************************************
   #*  Show member information
   #**************************************************************************
@@ -91,7 +82,6 @@
 ?>
 
 <?php echo $balMsg ?>
-<?php echo $overMsg ?>
 <?php echo $msg ?>
 
 <table class="primary">
@@ -158,17 +148,6 @@
     </td>
     <td valign="top" class="primary">
       <?php echo H($mbr->getEmail());?>
-    </td>
-  </tr>
-   <tr>
-    <td class="primary" valign="top">
-      <?php print $loc->getText("mbrViewMbrShipEnd"); ?>
-    </td>
-   <td valign="top" class="primary">
-      <?php 
-       if ($mbr->getMembershipEnd()=="0000-00-00") print $loc->getText("mbrViewMbrShipNoEnd");
-       else echo $mbr->getMembershipEnd();
-      ?>
     </td>
   </tr>
 <?php
@@ -246,15 +225,7 @@
 </td></tr></table>
 
 <br>
- <?php
-   #****************************************************************************
-   #*  Renew MemberShip
-   #****************************************************************************
- 
- echo $loc->getText("mbrViewRenew1")."&nbsp;&nbsp;&nbsp;<a href=\"../circ/mbr_renew_mbrship.php?mbrid=$mbrid&length=1\">1</a>&nbsp;&nbsp;&nbsp;<a href=\"../circ/mbr_renew_mbrship.php?mbrid=$mbrid&length=6\">6</a>&nbsp;&nbsp;&nbsp;<a href=\"../circ/mbr_renew_mbrship.php?mbrid=$mbrid&length=12\">12</a>&nbsp;&nbsp;&nbsp;".$loc->getText("mbrViewRenew2");
- 
-?>
-<br><br>
+
 <!--****************************************************************************
     *  Checkout form
     **************************************************************************** -->

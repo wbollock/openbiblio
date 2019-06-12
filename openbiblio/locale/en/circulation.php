@@ -73,7 +73,6 @@ $trans["mbrFldsEmail"]            = "\$text='Email Address:';";
 $trans["mbrFldsClassify"]         = "\$text='Classification:';";
 $trans["mbrFldsGrade"]            = "\$text='School Grade:';";
 $trans["mbrFldsTeacher"]          = "\$text='School Teacher:';";
-$trans["mbrFldsMbrShip"]          = "\$text='paid until (yyyy-mm-dd):';";
 $trans["mbrFldsSubmit"]           = "\$text='Submit';";
 $trans["mbrFldsCancel"]           = "\$text='Cancel';";
 $trans["mbrsearchResult"]         = "\$text='Result Pages: ';";
@@ -94,7 +93,7 @@ $trans["mbrNewSuccess"]           = "\$text='Member has been successfully added.
 #*  Translation text for page mbr_edit.php
 #****************************************************************************
 $trans["mbrEditSuccess"]          = "\$text='Member has been successfully updated.';";
-$trans["mbrRenewSuccess"]         = "\$text='Membership was sucessfully renewed for %length% month.';";
+
 #****************************************************************************
 #*  Translation text for page mbr_view.php
 #****************************************************************************
@@ -109,8 +108,6 @@ $trans["mbrViewPhoneWork"]        = "\$text='W:';";
 $trans["mbrViewEmail"]            = "\$text='Email Address:';";
 $trans["mbrViewGrade"]            = "\$text='School Grade:';";
 $trans["mbrViewTeacher"]          = "\$text='School Teacher:';";
-$trans["mbrViewMbrShipEnd"]       = "\$text='paid until:';";
-$trans["mbrViewMbrShipNoEnd"]     = "\$text='unlimited/not used';";
 $trans["mbrViewHead2"]            = "\$text='Checkout Stats:';";
 $trans["mbrViewStatColHdr1"]      = "\$text='Material';";
 $trans["mbrViewStatColHdr2"]      = "\$text='Count';";
@@ -144,18 +141,13 @@ $trans["mbrViewHoldHdr7"]         = "\$text='Status';";
 $trans["mbrViewHoldHdr8"]         = "\$text='Due Back';";
 $trans["mbrViewNoHolds"]          = "\$text='No bibliographies are currently on hold.';";
 $trans["mbrViewBalMsg"]           = "\$text='Note: Member has an outstanding account balance of %bal%.';";
-$trans["mbrViewShipEnd"]          = "\$text='Attention: Membership of this member has expired!';"
 $trans["mbrPrintCheckouts"]	  = "\$text='print checkouts';";
 $trans["mbrViewDel"]              = "\$text='del';";
-$trans["mbrViewRenew"]            = "\$text='Renew membership for';";
-$trans["mbrViewRenew2"]           = "\$text='month.<br>Since Today or since Paid-Until-Date, if it's in future.';";
-  
 
 #****************************************************************************
 #*  Translation text for page checkout.php
 #****************************************************************************
 $trans["checkoutBalErr"]          = "\$text='Member must pay outstanding account balance before checking out.';";
-$trans["checkoutEndErr"]          = "\$text='Member must renew membership before checking out.';";
 $trans["checkoutErr1"]            = "\$text='Barcode number must be all alphanumeric.';";
 $trans["checkoutErr2"]            = "\$text='No bibliography was found with that barcode number.';";
 $trans["checkoutErr3"]            = "\$text='Bibliography with barcode number %barcode% is already checked out.';";

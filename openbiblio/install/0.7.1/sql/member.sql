@@ -12,7 +12,6 @@ create table %prfx%member (
   ,work_phone varchar(15) null
   ,email varchar(128) null
   ,classification smallint not null
-  ,mbrshipend date not null
   )
   ENGINE=MyISAM
 ;

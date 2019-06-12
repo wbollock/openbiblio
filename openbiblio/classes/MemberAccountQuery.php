@@ -20,7 +20,7 @@ class MemberAccountQuery extends Query {
   var $_loc;
 
   function __construct() {
-    parent::__construct();
+    $this->Query();
     $this->_loc = new Localize(OBIB_LOCALE,"classes");
   }
 

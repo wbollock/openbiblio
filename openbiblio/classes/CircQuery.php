@@ -71,11 +71,6 @@ class CircQuery extends Query {
 			if ($balance > 0)
 				return new Error($this->_loc->getText("Member owes fines: checkout not allowed"));
 		}
-		                 if ($mbr->getMembershipEnd()!="0000-00-00") {
-			    		 if (strtotime($mbr->getMembershipEnd())<=strtotime("now")) {
-						 return new Error($this->_loc->getText("Member must renew membership before checking out."));
-			    		    }
-			  		}
 		$copyQ = new BiblioCopyQuery();
 		$copy = $copyQ->maybeGetByBarcode($bcode);
 		if (!$copy)
