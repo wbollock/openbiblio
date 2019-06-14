@@ -5,7 +5,6 @@
  
 require_once("../shared/global_constants.php");
 require_once("../classes/Query.php");
-require_once("../classes/BiblioSearch.php");
 require_once("../classes/BiblioField.php");
 require_once("../classes/Localize.php");
 
@@ -72,114 +71,32 @@ class BiblioSearchQuery extends Query {
     $join = "from biblio left join biblio_copy on biblio.bibid=biblio_copy.bibid ";
 
     # setting sql where clause
-    $bField = false;
     $criteria = "";
-    $joins = "";
-    $short = "";
-    $words = array_unique(unserialize(strtolower(serialize($words))));
     if ((sizeof($words) == 0) || ($words[0] == "")) {
       if ($opacFlg) $criteria = "where opac_flg = 'Y' ";
     } else {
       if ($type == OBIB_SEARCH_BARCODE) {
-        $criteria = $this->_getCriteria($type,array("biblio_copy.barcode_nmbr"),$words);
+        $criteria = $this->_getCriteria(array("biblio_copy.barcode_nmbr"),$words);
       } elseif ($type == OBIB_SEARCH_AUTHOR) {
-        $drop=1;
-        for ($i = 0; $i < count($words); $i++) {
-          if (strlen($words[$i]) <= $drop) continue;
-          $joins = $joins + 1;
-          $join .= "left join biblio_field as bf".$i." on bf".$i.".bibid=biblio.bibid ";
-          $join .= "and bf".$i.".tag in ('110', '700', '710') ";
-          $join .= "and bf".$i.".field_data ";
-          $join .= $this->mkSQL("like %Q ", "%".$words[$i]."%");
-          # word boundaries for short words: prevent excessive wildcard matching in WHERE
-          if (strlen($words[$i]) < $drop + 3) {
-            $wordsQ = preg_quote($words[$i]);
-            $join .= "and bf".$i.".field_data ";
-            $join .= $this->mkSQL("rlike %Q ", "[[:<:]]".$wordsQ);
-          }
-          $join .= "and not bf".$i.".subfield_cd regexp('[0-9]') ";
-        }
-        $criteria = $this->_getCriteria($type,array("biblio.author","biblio.responsibility_stmt"),$words,$bField=true,$drop);
+        $join .= "left join biblio_field on biblio_field.bibid=biblio.bibid "
+                 . "and biblio_field.tag='700' "
+                 . "and (biblio_field.subfield_cd='a' or biblio_field.subfield_cd='b') ";
+        $criteria = $this->_getCriteria(array("biblio.author","biblio.responsibility_stmt","biblio_field.field_data"),$words);
       } elseif ($type == OBIB_SEARCH_SUBJECT) {
-        $drop=1;
-        for ($i = 0; $i < count($words); $i++) {
-          if (strlen($words[$i]) <= $drop) continue;
-          if (strlen($words[$i]) <= $drop + 1) $short = $short + 1;
-          $joins = $joins + 1;
-          $join .= "left join biblio_field as bf".$i." on bf".$i.".bibid=biblio.bibid ";
-          # Tags equal to Locum connector class for III - http://thesocialopac.net/
-          $join .= "and bf".$i.".tag in (
-            '600', '610', '611', '630', '650', '651',
-            '653', '654', '655', '656', '657', '658',
-            '690', '691', '692', '693', '694', '695',
-            '696', '697', '698', '699'
-          ) ";
-          $join .= "and bf".$i.".field_data ";
-          $join .= $this->mkSQL("like %Q ", "%".$words[$i]."%");
-          if (strlen($words[$i]) < $drop + 3) {
-            $wordsQ = preg_quote($words[$i]);
-            $join .= "and bf".$i.".field_data ";
-            $join .= $this->mkSQL("rlike %Q ", "[[:<:]]".$wordsQ);
-          }
-          $join .= "and not bf".$i.".subfield_cd regexp('[0-9]') ";
-        }
-        $criteria = $this->_getCriteria($type,array("biblio.topic1","biblio.topic2","biblio.topic3","biblio.topic4","biblio.topic5"),$words,$bField=true,$drop);
-      } elseif ($type == OBIB_SEARCH_CALLNO) {
-        $criteria = $this->_getCriteria($type,array("biblio.call_nmbr1","biblio.call_nmbr2","biblio.call_nmbr3"),$words);
-      } elseif ($type == OBIB_SEARCH_KEYWORD) {
-        $drop=1;
-        for ($i = 0; $i < count($words); $i++) {
-          if (strlen($words[$i]) <= $drop) continue;
-          if (strlen($words[$i]) <= $drop + 1) $short = $short + 1;
-          $joins = $joins + 1;
-          $join .= "left join biblio_field as bf".$i." on bf".$i.".bibid=biblio.bibid ";
-          $join .= "and bf".$i.".tag in (";
-          if (strlen($words[$i]) > 8) $join.= " '010', '020', '022', '024',";
-          $join .= "
-            '110', '130', '245', '250', '260',
-            '300', '336', '337', '338', '340',
-            '380', '381', '382', '384', '383', '384',
-            '400', '410', '440', '490',
-            '500', '501', '502', '505', '511', '520',
-            '521', '526',
-            '600', '610', '611', '630', '650', '651',
-            '653', '654', '655', '656', '657', '658',
-            '690', '691', '692', '693', '694', '695',
-            '696', '697', '698', '699',
-            '700', '710', '730',
-            '800', '810', '830', '856'
-          ) ";
-          $join .= "and bf".$i.".field_data ";
-          $join .= $this->mkSQL("like %Q ", "%".$words[$i]."%");
-          if (strlen($words[$i]) < $drop + 3) {
-            $wordsQ = preg_quote($words[$i]);
-            $join .= "and bf".$i.".field_data ";
-            $join .= $this->mkSQL("rlike %Q ", "[[:<:]]".$wordsQ);
-          }
-          $join .= "and not (bf".$i.".tag = '260' and bf".$i.".subfield_cd in ('a', 'b', 'e', 'f', 'g')) ";
-          if ($opacFlg) $join .= "and not (bf".$i.".tag in ('526', '856') and bf".$i.".subfield_cd = 'x') ";
-          $join .= "and not bf".$i.".subfield_cd regexp('[0-9]') ";
-        }
-        $criteria = $this->_getCriteria($type,array("biblio.author","biblio.responsibility_stmt","biblio.title","biblio.title_remainder","biblio.topic1","biblio.topic2","biblio.topic3","biblio.topic4","biblio.topic5"),$words,$bField=true,$drop);
+        $criteria = $this->_getCriteria(array("biblio.topic1","biblio.topic2","biblio.topic3","biblio.topic4","biblio.topic5"),$words);
       } else {
-        $criteria = $this->_getCriteria($type,array("biblio.title","biblio.title_remainder"),$words);
+        $criteria = $this->_getCriteria(array("biblio.title"),$words);
       }
       if ($opacFlg) $criteria = $criteria."and opac_flg = 'Y' ";
     }
 
-    # limit number of joins and short words
-    if ($joins > 29 or $short > 3) {
-      $msg = "Enclose adjacent \"words to be found\" with quotation marks.";
-      if ($opacFlg) header("Location: ../opac/index.php?msg=".U($msg));
-      else header("Location: ../catalog/index.php?msg=".U($msg));
-      exit();
-    }
+    # setting count query
+    $sqlcount = "select count(*) as rowcount ";
+    $sqlcount = $sqlcount.$join;
+    $sqlcount = $sqlcount.$criteria;
 
     # setting query that will return all the data
-    # sql_calc_found_rows is efficient for counting rows on unefficient queries...
-    $sql = "select sql_calc_found_rows ";
-    if ($bField) $sql .= "distinct ";
-    $sql .= "biblio.* ";
+    $sql = "select biblio.* ";
     $sql .= ",biblio_copy.copyid ";
     $sql .= ",biblio_copy.barcode_nmbr ";
     $sql .= ",biblio_copy.status_cd ";
@@ -194,18 +111,21 @@ class BiblioSearchQuery extends Query {
     $limit = $this->_itemsPerPage;
     $sql .= $this->mkSQL(" limit %N, %N", $offset, $limit);
 
+    //echo "sqlcount=[".$sqlcount."]<br>\n";
     //exit("sql=[".$sql."]<br>\n");
 
-    # Running search sql statement
-    if (!$this->_query($sql, $this->_loc->getText("biblioSearchQueryErr2"))) {
+    # Running row count sql statement
+    if (!$this->_query($sqlcount, $this->_loc->getText("biblioSearchQueryErr1"))) {
       return false;
     }
 
     # Calculate stats based on row count
-    $this->_rowCount = implode(mysqli_fetch_row(mysqli_query('select found_rows();')));
+    $array = $this->_conn->fetchRow();
+    $this->_rowCount = $array["rowcount"];
     $this->_pageCount = ceil($this->_rowCount / $this->_itemsPerPage);
-    return true;
 
+    # Running search sql statement
+    return $this->_query($sql, $this->_loc->getText("biblioSearchQueryErr2"));
   }
 
 
@@ -217,21 +137,18 @@ class BiblioSearchQuery extends Query {
    * @access private
    ****************************************************************************
    */
-  function _getCriteria($type,$cols,&$words,$bField=false,$drop="") {
+  function _getCriteria($cols,&$words) {
     # setting selection criteria sql
     $prefix = "where ";
     $criteria = "";
     for ($i = 0; $i < count($words); $i++) {
-      # Drop very short words when querying biblio_field
-      if ($bField and strlen($words[$i]) > $drop) array_push($cols, "bf".$i.".field_data");
-      $criteria .= $prefix.$this->_getLike($type,$cols,$words[$i]);
+      $criteria .= $prefix.$this->_getLike($cols,$words[$i]);
       $prefix = " and ";
-      if ($bField and strlen($words[$i]) > $drop) array_pop($cols);
     }
     return $criteria;
   }
 
-  function _getLike($type,&$cols,$word) {
+  function _getLike(&$cols,$word) {
     $prefix = "";
     $suffix = "";
     if (count($cols) > 1) {
@@ -241,8 +158,7 @@ class BiblioSearchQuery extends Query {
     $like = "";
     for ($i = 0; $i < count($cols); $i++) {
       $like .= $prefix;
-      if ($type == OBIB_SEARCH_CALLNO) $like .= $this->mkSQL("%C like %Q ", $cols[$i], $word."%");
-      else $like .= $this->mkSQL("%C like %Q ", $cols[$i], "%".$word."%");
+      $like .= $this->mkSQL("%C like %Q ", $cols[$i], "%".$word."%");
       $prefix = " or ";
     }
     $like .= $suffix;
