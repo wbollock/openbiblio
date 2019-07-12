@@ -22,7 +22,7 @@
 
   $circQ = new CircQuery();
   list($info, $err) = $circQ->shelving_cart_e($barcode);
-  if ($err) $err = $err->toStr();
+  if ($err) $err = (string)$err-
   
   if ($err) {
     $postVars["barcodeNmbr"] = $barcode;
