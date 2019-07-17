@@ -9,7 +9,7 @@ require_once("../classes/Query.php");
 class InstallQuery extends Query {
   /* Override constructor so the installer can test the database connection */
   function __construct() {
-    ;
+    
   }
   function dropTable($tableName) {
     $sql = $this->mkSQL("drop table if exists %I ", $tableName);
