@@ -36,7 +36,7 @@
     global $mbrid, $postVars, $pageErrors;
     if (!$err)
       return;
-    $pageErrors[$field] = $err->toStr();
+    $pageErrors[$field] = (string) $err;
     $_SESSION["postVars"] = $postVars;
     $_SESSION["pageErrors"] = $pageErrors;
     header("Location: ../circ/mbr_view.php?mbrid=".U($mbrid));
