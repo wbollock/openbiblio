@@ -7,10 +7,6 @@ require_once("../shared/global_constants.php");
 require_once("../classes/Query.php");
 
 class InstallQuery extends Query {
-  /* Override constructor so the installer can test the database connection */
-  function __construct() {
-    
-  }
   function dropTable($tableName) {
     $sql = $this->mkSQL("drop table if exists %I ", $tableName);
     $this->exec($sql);
@@ -119,7 +115,7 @@ class InstallQuery extends Query {
           //process)
           $sql = str_replace("%prfx%",$tablePrfx,$sqlStmt);
           //replace ENGINE with TYPE for old MySQL versions
-          $MySQLn = explode('.', implode('', explode('-', mysqli_get_server_info())));
+          $MySQLn = explode('.', implode('', explode('-', mysqli_get_server_info($this->_link))));
           if ($MySQLn[0] < '5') {
             $sql = str_replace("ENGINE=","TYPE=",$sql);
             $sql = str_replace("engine=","type=",$sql);
